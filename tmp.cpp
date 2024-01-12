@@ -19,15 +19,17 @@ int main(){
             num -= 25;
             ++q;
         }
-        
+
         while(num - 10 >= 0){
             num -= 10;
             ++d;
         }
+
         while(num - 5 >= 0){
             num -= 5;
             ++n;
         }
+        
         while(num - 1 >= 0){
             num -= 1;
             ++p;
