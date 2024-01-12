@@ -19,6 +19,7 @@ int main(){
             num -= 25;
             ++q;
         }
+        
         while(num - 10 >= 0){
             num -= 10;
             ++d;
