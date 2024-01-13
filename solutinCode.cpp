@@ -1,9 +1,10 @@
 /*
 BaekJoon No
-#2720
+#2903
 */
 
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
@@ -15,22 +16,20 @@ void setDefault(){
 int main(){
     setDefault();
 
-    int t;
-    cin >> t;
+    int n;
+    cin >> n;
 
-    for(int i=0; i < t; ++i){
-        int q = 0, d = 0, n = 0, p = 0; //25, 10, 5, 1
-        int num;
+    int sqrtResult, former; 
+    sqrtResult = 2;     //first Value
 
-        cin >> num;
-
-        for(; num - 25 >= 0; ++q)   num -= 25;
-        for(; num - 10 >= 0; ++d)   num -= 10;
-        for(; num - 5 >= 0; ++n)   num -= 5;
-        for(; num - 1 >= 0; ++p)   num -= 1;
-
-        cout << q << ' ' << d << ' ' << n << ' ' << p << '\n';
+    for(int i=0; i <n; ++i){
+        former = sqrtResult;
+        sqrtResult = 2*former -1;
     }
+    
+    int result = pow(sqrtResult, 2);
+
+    cout << result;
     
     return 0;
 }
