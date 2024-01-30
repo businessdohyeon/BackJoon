@@ -1,6 +1,6 @@
 /*
 BaekJoon No
-#24262
+#24313
 */
 
 #include <iostream>
@@ -15,9 +15,13 @@ void setDefault(){
 int main(){
     setDefault();
 
-    int n;
-    cin >> n;
-    cout << "1\n0";
+    int a1, a0, c, n0;
+    cin >> a1 >> a0 >> c >> n0;
+
+    int result;
+    result = (c >= a1) && (a0 <= (c - a1) * n0);
+
+    cout << result;
 
     return 0;
 }
