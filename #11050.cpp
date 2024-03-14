@@ -13,22 +13,32 @@ void setDefault(){
     cout.tie(nullptr);
 }
 
-int factorial(int n){
+unsigned long long factorial(int n){
     if(n==0)    return 1;
     else        return n*factorial(n-1);
 }
 
-int binomialCoefficient(int n, int k){
-    return factorial(n)/factorial(k)/factorial(n-k);
+unsigned long long binomialCoefficient(int n, int k){
+    if(k > n/2) return binomialCoefficient(n, n-k);
+
+    unsigned long long result = 1;
+    for(int i=n; i>n-k; --i)
+        result *= i;
+    result /= factorial(k);
+
+    return result;
 }
 
 int main(){
     setDefault();
 
-    int n, k;
-    cin >> n >> k;
+    int t, n, m;
+    cin >> t;
 
-    cout << binomialCoefficient(n, k);
+    for(int i=0; i<t; ++i){
+        cin >> n >> m;
+        cout << binomialCoefficient(m, n) << '\n';
+    }
 
     return 0;
 }
