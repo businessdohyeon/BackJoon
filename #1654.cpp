@@ -16,79 +16,44 @@ void setDefault(){
 int main(){
     setDefault();
 
-    long long has, need;
+    int has, need;
     cin >> has >> need;
 
-    long long wire[has];
-    long long max;
-    for(long long i=0; i<has; ++i){
+    int wire[has];
+    int max;
+    for(int i=0; i<has; ++i){
         cin >> wire[i];
-        if(i==0){
+        if(i==0 || wire[i] > max)
             max = wire[i];
-        }else{
-            if(wire[i] > max)
-                max = wire[i];
-        }
     }
 
-    // has <= need
-    // has가 1인 경우
-    // need가 1인 경우
-
-    if(has == 1){
-        cout << wire[0]/need;
-        return 0;
-    }
-
-    if(need == 1){
-        cout << max;
-        return 0;
-    }
-
-
+    long long ans = 0;
     long long start = 0;
     long long end = max;
-    long long mid = (start+end)/2;
-    long long ans = 0;
 
     long long cal = 0;
-    for(long long i=0; i<has; ++i){
+    for(int i=0; i<has; ++i)
         cal += wire[i] / end;
-    }
-    if(cal >= need && mid > ans){
+
+    if(cal >= need)
         ans = end;
-    }
 
-    // cout << ans << "!!" << endl;/
+    while(true){
+        long long mid = (start+end)/2;
 
+        if(start == mid || end == mid)  break;
 
-    while(mid>0){
-        mid = (start+end)/2;
-
-        if(start == mid || end == mid){
-            break;
-        }
-
-        // cout << "start = " << start << " end = " << end << " | mid = " << mid << endl;
-
-        long long cal = 0;
-        for(long long i=0; i<has; ++i){
+        cal = 0;
+        for(int i=0; i<has; ++i)
             cal += wire[i] / mid;
-        }
 
-        // cout << cal << endl;
-
-        if(cal >= need && mid > ans){
-            ans = mid;
-        }
-
-        if(cal < need){     // 좌측
+        if(cal < need){
             end = mid;
-        }else if(cal >= need){   // 우측
+        }else{
+            if(mid > ans)
+                ans = mid;
             start = mid;
         }
-
-        
     }
     
     cout << ans;
