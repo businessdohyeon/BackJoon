@@ -18,11 +18,6 @@ struct Edge{
     double weight;
 };
 
-bool compare(Edge a, Edge b){
-    if(a.weight != b.weight)        return a.weight < b.weight;
-    if(a.star1Idx != b.star1Idx)    return a.star1Idx < b.star1Idx;
-    return a.star2Idx < b.star2Idx;
-}
 int findRoot(int unionFindArr[], int target){
     if(unionFindArr[target] == target)      return target;
 
@@ -54,7 +49,11 @@ int main(){
         }
     }
 
-    sort(edges.begin(), edges.end(), compare);
+    sort(edges.begin(), edges.end(), [](Edge a, Edge b){
+        if(a.weight != b.weight)        return a.weight < b.weight;
+        if(a.star1Idx != b.star1Idx)    return a.star1Idx < b.star1Idx;
+        return a.star2Idx < b.star2Idx;
+    });
 
     int unionFindArr[starNum];
     for(int i=0; i<starNum; ++i)
@@ -72,7 +71,7 @@ int main(){
     }
 
     cout.precision(2);
-    cout << ans;
+    cout << fixed << ans;
 
     return 0;
 }
