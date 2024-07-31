@@ -4,6 +4,8 @@ BackJoon No.
 */
 
 #include <iostream>
+#include <string>
+#include <algorithm>
 
 using namespace std;
 
@@ -12,14 +14,26 @@ int main(){
     cin.tie(nullptr);
     cout.tie(nullptr);
 
-    int a, b, c;
-    cin >> a >> b >> c;
+    int testNum;
+    cin >> testNum;
 
-    cout << a+b-c << '\n';
+    for(int _=0; _<testNum; ++_){
+        string test;
+        cin >> test;
 
-    for(int tmp=b; tmp>0; tmp/=10, a*=10);
-
-    cout << a+b-c << '\n';
+        int total = 0;
+        int score = 0;
+        for(auto ch : test){
+            if(ch == 'O'){
+                ++score;
+                total += score;
+            }else{
+                score = 0;
+            }
+        }
+        
+        cout << total << '\n';
+    }
 
     return 0;
 }
