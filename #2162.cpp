@@ -24,7 +24,7 @@ bool isMeeting(const Line& a, const Line& b){
 
 	if(ccwAtoB0 != ccwAtoB1 && ccwBtoA0 != ccwBtoA1)	return true;
 	
-	if(ccwAtoB0*ccwAtoB1 == 0 && ccwBtoA0*ccwBtoA0 == 0
+	if(ccwAtoB0*ccwAtoB1 == 0 && ccwBtoA0*ccwBtoA1 == 0
 		&& min(a.first, a.second) <= max(b.first, b.second) 
 		&& min(b.first, b.second) <= max(a.first, a.second)){
 		return true;
