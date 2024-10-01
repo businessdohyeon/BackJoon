@@ -4,20 +4,14 @@ BackJoon No.
 */
 
 #include <iostream>
-#include <string>
-#include <unordered_map>
 #include <iomanip>
-#include <algorithm>
+#include <string>
+#include <map>
 #include <vector>
 
 using namespace std;
 
-const int SMALLCASE_NUM = 'z' - 'a' + 1;
-
 class Trie{
-private:
-	unordered_map<char, Trie*> children;
-	
 public:
 	~Trie(){
 		for(auto& child : children){
@@ -52,12 +46,11 @@ public:
 			return children[ch]->cnt(str, idx+1, value);
 		}
 		
-		if(idx == str.length()-1){
-			return children[ch]->cnt(str, idx+1, value);
-		}
-
 		return children[ch]->cnt(str, idx+1, value+1);
 	}
+	
+private:
+	map<char, Trie*> children;
 };
 
 int main(){
@@ -80,8 +73,6 @@ int main(){
 		double total = 0;
 		for(int i=0; i<wordNum; ++i){
 			total += root.cnt(words[i], 0, 0);
-
-			cout << words[i] << " 의 cnt 값 : " << root.cnt(words[i], 0, 1) << endl;
 		}
 
 		cout << total / wordNum << '\n'; 
