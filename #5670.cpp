@@ -8,49 +8,65 @@ BackJoon No.
 #include <string>
 #include <map>
 #include <vector>
+#include <memory.h>
 
 using namespace std;
 
+constexpr int SMALLCASE_NUM = 'z' - 'a' + 1;
+constexpr int NULL_CHAR_IDX = SMALLCASE_NUM;
+constexpr int CHILDREN_SIZE = SMALLCASE_NUM + 1;
+
 class Trie{
 public:
+	Trie(){
+		memset(children, 0, sizeof(children));
+		childrenCnt = 0;
+	}
+
 	~Trie(){
-		for(auto& child : children){
-			delete child.second;
+		for(const auto& child : children){
+			if(child != nullptr){
+				delete child;
+			}
 		}
 	}
 
 	void insert(const string& str, const int idx){
 		if(idx > str.length())		return;
 
-		char ch = str[idx];
-		if(children.find(ch) == children.end()){
-			children[ch] = new Trie();
+		Trie*& aptChild = (idx == str.length() ? children[NULL_CHAR_IDX] : children[str[idx] - 'a']);
+		if(aptChild == nullptr){
+			aptChild = new Trie();
+			++childrenCnt;
 		}
 
-		children[ch]->insert(str, idx+1);
+		aptChild->insert(str, idx+1);
 	}
 
 	double cnt(const string& str, int idx, double value){
-		if(idx >= str.length())		return value;
+		if(idx >= str.length()){
+			return value;
+		}
 
-		char ch = str[idx];
-		if(children.find(ch) == children.end()){
+		Trie*& aptChild = children[str[idx] - 'a'];
+		if(aptChild == nullptr){
 			return value;
 		}
 
 		if(idx == 0){
-			return children[ch]->cnt(str, idx+1, value+1);
+			return aptChild->cnt(str, idx+1, value+1);
 		}
 
-		if(children.size() == 1){
-			return children[ch]->cnt(str, idx+1, value);
+		if(childrenCnt == 1){
+			return aptChild->cnt(str, idx+1, value);
 		}
 		
-		return children[ch]->cnt(str, idx+1, value+1);
+		return aptChild->cnt(str, idx+1, value+1);
 	}
-	
+
 private:
-	map<char, Trie*> children;
+	Trie* children[CHILDREN_SIZE];
+	int childrenCnt;
 };
 
 int main(){
