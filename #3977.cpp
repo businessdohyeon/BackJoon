@@ -10,6 +10,8 @@ BackJoon No.
 
 using namespace std;
 
+constexpr int INITIAL_VALUE = -1;
+
 int main(){
 	ios_base::sync_with_stdio(false);
 	cin.tie(nullptr);
@@ -22,79 +24,73 @@ int main(){
 		int nodeNum, edgeNum;
 		cin >> nodeNum >> edgeNum;
 
-		vector<int> forwardGraph[nodeNum];
-		vector<int> backwardGraph[nodeNum];
+		vector<int> graph[nodeNum];
 		for(int __=0; __<edgeNum; ++__){
 			int a, b;
 			cin >> a >> b;
-			forwardGraph[a].push_back(b);
-			backwardGraph[b].push_back(a);
+			graph[a].push_back(b);
 		}
 
+		int sccCnt = 0;
+		vector<int> sccInfo(nodeNum, INITIAL_VALUE);
+
+		int visitCnt = 0;
+		vector<int> whenVisited(nodeNum, INITIAL_VALUE);
 		vector<int> dfsStack;
-		vector<bool> isVisited(nodeNum, false);
-		function<void(int)> setDfsStack = [&](int root)->void{
-			if(isVisited[root])		return;
-
-			isVisited[root] = true;
-
-			for(const auto& e : forwardGraph[root]){
-				if(isVisited[e])	continue;
-
-				setDfsStack(e);
-			}
+		function<int(int)> tarjan = [&](int root)->int{
+			++visitCnt;
+			whenVisited[root] = visitCnt;
 
 			dfsStack.push_back(root);
+
+			int minVisitCnt = whenVisited[root];
+			for(const auto& e : graph[root]){
+				if(whenVisited[e] == INITIAL_VALUE){
+					minVisitCnt = min(minVisitCnt, tarjan(e));
+				}else if(sccInfo[e] == INITIAL_VALUE){
+					minVisitCnt = min(minVisitCnt, whenVisited[e]);
+				}else{
+					// do nothin'
+				}
+			}
+
+			if(minVisitCnt == whenVisited[root]){
+				while(true){
+					int top = dfsStack.back();
+					dfsStack.pop_back();
+
+					sccInfo[top] = sccCnt;
+
+					if(top == root)		break;
+				}
+
+				++sccCnt;
+			}
+
+			return minVisitCnt;
 		};
 
+
 		for(int node=0; node<nodeNum; ++node){
-			setDfsStack(node);
+			if(whenVisited[node] != INITIAL_VALUE)		continue;
+			
+			tarjan(node);
 		}
 
-		vector<int> sccArr[nodeNum];
-		int sccInfo[nodeNum];
-		int sccNum = 0;
-		fill(isVisited.begin(), isVisited.end(), false);
-		
-		while(!dfsStack.empty()){
-			int top = dfsStack.back();
-			dfsStack.pop_back();
-
-			if(isVisited[top])		continue;
-
-			function<void(int)> makeSCC = [&](int root)->void{
-				if(isVisited[root])		return;
-
-				isVisited[root] = true;
-				sccInfo[root] = sccNum;
-				sccArr[sccNum].push_back(root);
-
-				for(const auto& e : backwardGraph[root]){
-					if(isVisited[e])	continue;
-
-					makeSCC(e);
-				}
-			};
-
-			makeSCC(top);
-
-			++sccNum;
-		}
-
-		vector<int> sccIndegree(sccNum, 0);
+		vector<int> sccIndegree(sccCnt, 0);
 		for(int node=0; node<nodeNum; ++node){
-			for(const auto& e : forwardGraph[node]){
+			for(const auto& e : graph[node]){
 				if(sccInfo[node] != sccInfo[e]){
 					++sccIndegree[sccInfo[e]];
 				}
 			}
 		}
 
-		int aptScc = -1;
+		int aptScc = INITIAL_VALUE;
 		bool isOnly = true;
-		for(int scc=0; scc<sccNum; ++scc){
+		for(int scc=0; scc<sccCnt; ++scc){
 			if(sccIndegree[scc] == 0){
-				if(aptScc != -1){
+				if(aptScc != INITIAL_VALUE){
 					isOnly = false;
 					break;
 				}else{
@@ -104,9 +100,10 @@ int main(){
 		}
 
 		if(isOnly){
-			sort(sccArr[aptScc].begin(), sccArr[aptScc].end());
-			for(const auto& e : sccArr[aptScc]){
-				cout << e << '\n';
+			for(int node=0; node<nodeNum; ++node){
+				if(sccInfo[node] == aptScc){
+					cout << node << '\n';
+				}
 			}
 		}else{
 			cout << "Confused" << '\n';
